@@ -10,7 +10,7 @@ local BugSprite = import(".BugSprite")
 local DeadBugSprite = import(".DeadBugSprite")
 
 GameView.HOLE_POSITION = cc.p(display.cx - 30, display.cy - 75)
-GameView.INIT_LIVES = 5
+GameView.INIT_LIVES = 1
 GameView.ADD_BUG_INTERVAL_MIN = 1
 GameView.ADD_BUG_INTERVAL_MAX = 3
 
