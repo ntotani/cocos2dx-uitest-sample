@@ -169,6 +169,9 @@ function GameView:onCreate()
         display.setAnimationCache(filename, animation)
     end
 
+    audio.preloadMusic("BugEnterHole.wav")
+    audio.preloadMusic("BugDead.wav")
+
     -- bind the "event" component
     cc.bind(self, "event")
 end
