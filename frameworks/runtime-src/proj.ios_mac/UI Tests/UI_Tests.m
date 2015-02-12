@@ -24,11 +24,13 @@
 - (void)beforeAll {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         _conn = [[TFTCPConnection alloc] initWithHostname:@"localhost" port:6010 timeout:30];
-        if ([_conn openSocket]) {
-            NSString *req = @"sendrequest {\"cmd\":\"start-logic\",\"debugcfg\":\"nil\"}\nfps off\n";
-            [_conn writeData:[req dataUsingEncoding:NSUTF8StringEncoding]];
+        if (![_conn openSocket]) {
+            XCTFail(@"cant open");
         }
+        NSString *req = @"sendrequest {\"cmd\":\"start-logic\",\"debugcfg\":\"nil\"}\nfps off\n";
+        [_conn writeData:[req dataUsingEncoding:NSUTF8StringEncoding]];
     });
+    [tester waitForTimeInterval:1];
 }
 
 - (void)afterAll {
@@ -38,7 +40,6 @@
 }
 
 - (void)testPressStart {
-    [tester waitForTimeInterval:1];
     NSArray *windows = [[UIApplication sharedApplication] windowsWithKeyWindow];
     UIGraphicsBeginImageContextWithOptions([[windows objectAtIndex:0] bounds].size, YES, 0);
     for (UIWindow *window in windows) {
