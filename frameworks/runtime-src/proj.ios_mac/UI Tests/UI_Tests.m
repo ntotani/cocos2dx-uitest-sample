@@ -8,33 +8,48 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import <KIF/KIF.h>
+#import <KIF/UIApplication-KIFAdditions.h>
+#import <OHHTTPStubs/OHHTTPStubs.h>
+#import "TFTCPConnection.h"
 
-@interface UI_Tests : XCTestCase
+@interface UI_Tests : KIFTestCase
 
 @end
 
-@implementation UI_Tests
-
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+@implementation UI_Tests {
+    TFTCPConnection *_conn;
 }
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
+- (void)beforeAll {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        _conn = [[TFTCPConnection alloc] initWithHostname:@"localhost" port:6010 timeout:30];
+        if ([_conn openSocket]) {
+            NSString *req = @"sendrequest {\"cmd\":\"start-logic\",\"debugcfg\":\"nil\"}\nfps off\n";
+            [_conn writeData:[req dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+    });
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
+- (void)afterAll {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [_conn closeSocket];
+    });
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+- (void)testPressStart {
+    [tester waitForTimeInterval:1];
+    NSArray *windows = [[UIApplication sharedApplication] windowsWithKeyWindow];
+    UIGraphicsBeginImageContextWithOptions([[windows objectAtIndex:0] bounds].size, YES, 0);
+    for (UIWindow *window in windows) {
+        [window drawViewHierarchyInRect:window.bounds afterScreenUpdates:YES];
+    }
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *actual = UIImagePNGRepresentation(image);
+    NSString *path = OHPathForFileInBundle(@"ss.png", nil);
+    NSData *expected = [NSData dataWithContentsOfFile:path];
+    XCTAssertTrue([expected isEqual:actual]);
 }
 
 @end
