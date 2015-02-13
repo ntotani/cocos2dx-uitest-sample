@@ -23,7 +23,7 @@ end
 function BugSprite:start(destination)
     self.model_:setDestination(destination)
     self:updatePosition()
-    --self:playAnimationForever(display.getAnimationCache(self.animationName_))
+    self:playAnimationForever(display.getAnimationCache(self.animationName_))
     return self
 end
 

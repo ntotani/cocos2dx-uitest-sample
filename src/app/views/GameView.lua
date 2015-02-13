@@ -99,6 +99,9 @@ function GameView:bugEnterHole(bug)
     audio.playSound("BugEnterHole.wav")
 
     if self.lives_ <= 0 then
+        for _, e in pairs(self.bugs_) do
+            e:setVisible(false)
+        end
         self:dispatchEvent({name = GameView.events.PLAYER_DEAD_EVENT})
     end
 
