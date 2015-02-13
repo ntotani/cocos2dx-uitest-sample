@@ -70,6 +70,28 @@ TFTCPConnection *_conn;
     [self waitForExpectationsWithTimeout:30 handler:nil];
 }
 
+- (void)testAlive {
+    XCTestExpectation *exp = [self expectationWithDescription:@"alive"];
+    dispatch_async(queue, ^{
+        [_conn writeData:[@"sendrequest {\"cmd\":\"reload\",\"modulefiles\":[\"src/test/noRand.lua\"]}\nfps off\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:1];
+        [_conn writeData:[@"touch tap 600 600\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:11];
+        [_conn writeData:[@"touch tap 686 535\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:0.1];
+        [_conn writeData:[@"touch tap 560 742\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:0.1];
+        [_conn writeData:[@"touch tap 283 617\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:0.1];
+        [_conn writeData:[@"touch tap 120 191\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:1];
+        //[self saveSS];
+        [self assertSS:@"alive.png"];
+        [exp fulfill];
+    });
+    [self waitForExpectationsWithTimeout:30 handler:nil];
+}
+
 - (void)assertSS:(NSString*)fileName {
     NSArray *windows = [[UIApplication sharedApplication] windowsWithKeyWindow];
     UIGraphicsBeginImageContextWithOptions([[windows objectAtIndex:0] bounds].size, YES, 0);

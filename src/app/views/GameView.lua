@@ -111,7 +111,7 @@ end
 function GameView:bugDead(bug)
     local imageFilename = GameView.IMAGE_FILENAMES[bug:getModel():getType()]
     DeadBugSprite:create(imageFilename)
-        :fadeOut({time = 2.0, delay = 0.5, removeSelf = true})
+        :fadeOut({time = 0.4, delay = 0.1, removeSelf = true})
         :move(bug:getPosition())
         :rotate(bug:getRotation() + 120)
         :addTo(self.bugsNode_, GameView.ZORDER_DEAD_BUG)
