@@ -9,7 +9,11 @@ require "cocos.init"
 local TestApp = class("TestApp", cc.load("mvc").AppBase)
 
 function TestApp:onCreate()
-    math.randomseed(0)
+    local counter = 0
+    math.random = function(a, b)
+        counter = counter + 13
+        return a + counter % (b - a)
+    end
 end
 
 local function main()
