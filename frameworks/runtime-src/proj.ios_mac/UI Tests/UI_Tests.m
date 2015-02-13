@@ -17,29 +17,60 @@
 
 @end
 
-@implementation UI_Tests {
-    TFTCPConnection *_conn;
-}
+@implementation UI_Tests
+
+dispatch_queue_t queue;
+TFTCPConnection *_conn;
 
 - (void)beforeAll {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    queue = dispatch_queue_create("org.cocos2dx.MyLuaGame.uitest", NULL);
+    XCTestExpectation *exp = [self expectationWithDescription:@"connect"];
+    dispatch_async(queue, ^{
         _conn = [[TFTCPConnection alloc] initWithHostname:@"localhost" port:6010 timeout:30];
         if (![_conn openSocket]) {
             XCTFail(@"cant open");
         }
-        NSString *req = @"sendrequest {\"cmd\":\"start-logic\",\"debugcfg\":\"nil\"}\nfps off\n";
+        NSString *req = @"sendrequest {\"cmd\":\"start-logic\",\"debugcfg\":\"nil\"}\n";
         [_conn writeData:[req dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:1];
+        [exp fulfill];
     });
-    [tester waitForTimeInterval:1];
+    [self waitForExpectationsWithTimeout:3 handler:nil];
 }
 
 - (void)afterAll {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(queue, ^{
         [_conn closeSocket];
     });
 }
 
 - (void)testPressStart {
+    XCTestExpectation *exp = [self expectationWithDescription:@"pressStart"];
+    dispatch_async(queue, ^{
+        [_conn writeData:[@"sendrequest {\"cmd\":\"reload\",\"modulefiles\":[\"src/test/noRand.lua\"]}\nfps off\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:1];
+        //[self saveSS];
+        [self assertSS:@"ss.png"];
+        [exp fulfill];
+    });
+    [self waitForExpectationsWithTimeout:3 handler:nil];
+}
+
+- (void)testResult {
+    XCTestExpectation *exp = [self expectationWithDescription:@"result"];
+    dispatch_async(queue, ^{
+        [_conn writeData:[@"sendrequest {\"cmd\":\"reload\",\"modulefiles\":[\"src/test/noRand.lua\"]}\nfps off\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:1];
+        [_conn writeData:[@"touch tap 600 600\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [tester waitForTimeInterval:15];
+        //[self saveSS];
+        [self assertSS:@"result.png"];
+        [exp fulfill];
+    });
+    [self waitForExpectationsWithTimeout:30 handler:nil];
+}
+
+- (void)assertSS:(NSString*)fileName {
     NSArray *windows = [[UIApplication sharedApplication] windowsWithKeyWindow];
     UIGraphicsBeginImageContextWithOptions([[windows objectAtIndex:0] bounds].size, YES, 0);
     for (UIWindow *window in windows) {
@@ -48,9 +79,13 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     NSData *actual = UIImagePNGRepresentation(image);
-    NSString *path = OHPathForFileInBundle(@"ss.png", nil);
+    NSString *path = OHPathForFileInBundle(fileName, nil);
     NSData *expected = [NSData dataWithContentsOfFile:path];
     XCTAssertTrue([expected isEqual:actual]);
+}
+
+- (void)saveSS {
+    [[UIApplication sharedApplication] writeScreenshotForLine:0 inFile:@"kif" description:@"screenshot" error:nil];
 }
 
 @end

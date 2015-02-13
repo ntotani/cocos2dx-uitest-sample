@@ -68,6 +68,7 @@
 		C699FD3E1A8B8BF3000AEA91 /* UI_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C699FD3D1A8B8BF3000AEA91 /* UI_Tests.m */; };
 		C699FD4C1A8C92F4000AEA91 /* TFTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = C699FD4B1A8C92F4000AEA91 /* TFTCPConnection.m */; };
 		C699FD4E1A8C97C4000AEA91 /* ss.png in Resources */ = {isa = PBXBuildFile; fileRef = C699FD4D1A8C97C4000AEA91 /* ss.png */; };
+		C699FD501A8D318D000AEA91 /* result.png in Resources */ = {isa = PBXBuildFile; fileRef = C699FD4F1A8D318D000AEA91 /* result.png */; };
 		D6B061351803AC000077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B061341803AC000077942B /* CoreMotion.framework */; };
 		F293B3CD15EB7BE500256477 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CC15EB7BE500256477 /* QuartzCore.framework */; };
 		F293B3D115EB7BE500256477 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3D015EB7BE500256477 /* OpenAL.framework */; };
@@ -239,6 +240,7 @@
 		C699FD4A1A8C92F4000AEA91 /* TFTCPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFTCPConnection.h; sourceTree = "<group>"; };
 		C699FD4B1A8C92F4000AEA91 /* TFTCPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFTCPConnection.m; sourceTree = "<group>"; };
 		C699FD4D1A8C97C4000AEA91 /* ss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ss.png; sourceTree = "<group>"; };
+		C699FD4F1A8D318D000AEA91 /* result.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = result.png; sourceTree = "<group>"; };
 		D6B061341803AC000077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
 		D70C57B65F0AC3C3261EAAE4 /* libPods-UI Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UI Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F293B3C815EB7BE500256477 /* MyLuaGame iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MyLuaGame iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -430,6 +432,7 @@
 			children = (
 				C699FD3C1A8B8BF3000AEA91 /* Info.plist */,
 				C699FD4D1A8C97C4000AEA91 /* ss.png */,
+				C699FD4F1A8D318D000AEA91 /* result.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -562,7 +565,6 @@
 				F293B3C415EB7BE500256477 /* Sources */,
 				F293B3C515EB7BE500256477 /* Frameworks */,
 				F293B3C615EB7BE500256477 /* Resources */,
-				3EC988201966433500A45E0E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -692,6 +694,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C699FD501A8D318D000AEA91 /* result.png in Resources */,
 				C699FD4E1A8C97C4000AEA91 /* ss.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -727,19 +730,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3EC988201966433500A45E0E /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "find ${SRCROOT}/../../../src/ -name \"*\" -exec touch -cm {} \\;\nfind ${SRCROOT}/../../../res/ -name \"*\" -exec touch -cm {} \\;";
-		};
 		60EDDB7B6218CAB79299A0F8 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
